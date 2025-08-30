@@ -4,124 +4,606 @@
   <meta charset="utf-8" />
   <title>محطة صوفر لخدمة السيارات | Sawfar Auto Service Station</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base */
+    :root {
+      --yellow: #FFD600;
+      --pink: #ff0281;
+      --blue: #4A86E8;
+      --green: #4CAF50;
+      --bg: #000;
+      --panel: #111;
+      --muted: #aaa;
+      --transition: all 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: #fff;
+      font-family: 'Cairo', 'Montserrat', sans-serif;
+      overflow: hidden;
+    }
+    
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      padding: 36px 24px;
+      background: rgba(17, 17, 17, 0.85);
+      border-bottom: 2px solid var(--yellow);
+      min-height: 30vh;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(5px);
+    }
+    
+    .left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .logo {
+      height: 130px;
+      order: 1;
+      filter: drop-shadow(0 0 10px rgba(255, 214, 0, 0.5));
+    }
+    
+    .clock {
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--pink);
+      order: 2;
+      text-shadow: 0 0 10px rgba(255, 102, 178, 0.7);
+    }
+    
+    .title {
+      font-size: 48px;
+      line-height: 1.2;
+      margin: 0;
+      color: var(--yellow);
+      font-weight: 800;
+      order: 3;
+      text-shadow: 0 0 10px rgba(255, 214, 0, 0.5);
+    }
+    
+    /* Slides Container */
+    .slides-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .slides {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Individual Slide */
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 40px;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease, transform 1.2s ease;
+      transform: translateY(20px) scale(0.98);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 100%);
+      z-index: -1;
+    }
+    
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 2;
+      transform: translateY(0) scale(1);
+    }
+    
+    /* Slide Backgrounds */
+    .slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
+    .slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
+    .slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
+    .slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1507136566006-cfc505b114fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
+    .slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
+    .slide:nth-child(6) { background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
+    
+    /* Content Styling */
+    .slide-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .page-title {
+      font-size: 42px;
+      color: var(--yellow);
+      margin: 0 0 30px;
+      opacity: 0;
+      transform: translateY(20px);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    
+    .prices {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(20px);
+      margin-bottom: 30px;
+    }
+    
+    .price-card {
+      background: rgba(17, 17, 17, 0.8);
+      padding: 20px 30px;
+      border-radius: 12px;
+      text-align: center;
+      min-width: 200px;
+      border: 2px solid var(--yellow);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      backdrop-filter: blur(5px);
+    }
+    
+    .price-card .price {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--pink);
+      display: block;
+      margin-top: 10px;
+    }
+    
+    .overview {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 22px;
+      opacity: 0;
+      transform: translateY(20px);
+      background: rgba(17, 17, 17, 0.8);
+      border-radius: 12px;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .overview th, .overview td {
+      border: 1px solid #333;
+      padding: 15px 20px;
+      text-align: center;
+    }
+    
+    .overview th {
+      background: rgba(27, 27, 27, 0.9);
+      color: var(--yellow);
+    }
+    
+    .overview td {
+      background: rgba(17, 17, 17, 0.7);
+    }
+    
+    /* Services list */
+    .services {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 22px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      opacity: 0;
+    }
+    
+    .services li {
+      margin: 0;
+      padding: 15px 20px;
+      background: rgba(17, 17, 17, 0.8);
+      border-left: 5px solid var(--yellow);
+      opacity: 0;
+      transform: translateY(20px);
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      backdrop-filter: blur(5px);
+      transition: var(--transition);
+    }
+    
+    .services li:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    /* Footer */
+    .footer {
+      background: rgba(17, 17, 17, 0.85);
+      border-top: 1px solid #222;
+      padding: 15px;
+      color: var(--yellow);
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(5px);
+    }
+    
+    .ticker {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    
+    .ticker span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 20s linear infinite;
+      font-size: 20px;
+    }
+    
+    /* Controls */
+    .controls {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 15px;
+      z-index: 20;
+    }
+    
+    .control-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(17, 17, 17, 0.8);
+      border: 2px solid var(--yellow);
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 20px;
+      backdrop-filter: blur(5px);
+    }
+    
+    .control-btn:hover {
+      background: var(--yellow);
+      color: #000;
+      transform: scale(1.1);
+    }
+    
+    /* Progress Bar */
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 5px;
+      background: var(--yellow);
+      width: 100%;
+      transform-origin: left;
+      z-index: 20;
+    }
+    
+    /* Animations */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .play { animation: fadeUp 0.7s ease forwards; }
+    .services li.show { animation: fadeUp 0.6s ease forwards; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 20px 15px;
+        min-height: 25vh;
+      }
+      
+      .logo {
+        height: 80px;
+      }
+      
+      .clock {
+        font-size: 40px;
+      }
+      
+      .title {
+        font-size: 28px;
+      }
+      
+      .slide {
+        padding: 20px;
+      }
+      
+      .page-title {
+        font-size: 28px;
+      }
+      
+      .prices {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .services {
+        grid-template-columns: 1fr;
+      }
+      
+      .overview {
+        font-size: 16px;
+      }
+      
+      .services li {
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app">
-
     <header class="header">
       <div class="left">
-        <img src="logo.png" alt="Logo" class="logo">
-        <div id="clock" class="clock"></div>
+        <img src="https://placehold.co/300x100/111111/FFD600/png?text=Sawfar+Auto+Service" alt="Logo" class="logo">
+        <div id="clock" class="clock">00:00</div>
       </div>
       <h1 class="title">قائمة الأسعار | Price List</h1>
     </header>
 
-    <main class="slides">
-      <section class="slide">
-        <h2 class="page-title">جميع الخدمات | Overview</h2>
-        <table class="overview">
-          <tr><th>الخدمة</th><th>Saloon</th><th>Wheel</th></tr>
-          <tr><td>🥈 الباقة الفضية | Silver</td><td>25 AED</td><td>35 AED</td></tr>
-          <tr><td>🥇 الباقة الذهبية | Gold</td><td>35 AED</td><td>45 AED</td></tr>
-          <tr><td>💎 الباقة البلاتينية | Platinum</td><td>55 AED</td><td>75 AED</td></tr>
-          <tr><td>💠 الباقة الماسية | Diamond</td><td>90 AED</td><td>110 AED</td></tr>
-          <tr><td>🛠️ تنظيف المحرك | Power Cleaning</td><td>40 AED</td><td>60 AED</td></tr>
-          <tr><td>🛠️ تنظيف الشاصي | Chassis Cleaning</td><td>40 AED</td><td>60 AED</td></tr>
-          <tr><td>✨ تلميع الشاصي | Chassis Shine</td><td>25 AED</td><td>35 AED</td></tr>
-        </table>
-      </section>
+    <div class="slides-container">
+      <div class="progress-bar" id="progress-bar"></div>
+      
+      <main class="slides">
+        <section class="slide">
+          <div class="slide-content">
+            <h2 class="page-title">جميع الخدمات | Overview</h2>
+            <table class="overview">
+              <tr><th>الخدمة</th><th>Saloon</th><th>Wheel</th></tr>
+              <tr><td>🥈 الباقة الفضية | Silver</td><td>25 AED</td><td>35 AED</td></tr>
+              <tr><td>🥇 الباقة الذهبية | Gold</td><td>35 AED</td><td>45 AED</td></tr>
+              <tr><td>💎 الباقة البلاتينية | Platinum</td><td>55 AED</td><td>75 AED</td></tr>
+              <tr><td>💠 الباقة الماسية | Diamond</td><td>90 AED</td><td>110 AED</td></tr>
+              <tr><td>🛠️ تنظيف المحرك | Power Cleaning</td><td>40 AED</td><td>60 AED</td></tr>
+              <tr><td>🛠️ تنظيف الشاصي | Chassis Cleaning</td><td>40 AED</td><td>60 AED</td></tr>
+              <tr><td>✨ تلميع الشاصي | Chassis Shine</td><td>25 AED</td><td>35 AED</td></tr>
+            </table>
+          </div>
+        </section>
 
-      <section class="slide">
-        <h2 class="page-title">🥈 الباقة الفضية | Silver Package</h2>
-        <div class="prices">
-          <div>🚗 Saloon: <span class="price">25 AED</span></div>
-          <div>🚙 Wheel: <span class="price">35 AED</span></div>
+        <section class="slide">
+          <div class="slide-content">
+            <h2 class="page-title">🥈 الباقة الفضية | Silver Package</h2>
+            <div class="prices">
+              <div class="price-card">🚗 Saloon: <span class="price">25 AED</span></div>
+              <div class="price-card">🚙 Wheel: <span class="price">35 AED</span></div>
+            </div>
+            <ul class="services">
+              <li>🚗 غسيل خارجي | Exterior Washing</li>
+              <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
+              <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
+              <li>🛠️ تنظيف لوحة القيادة | Doors Panel Cleaning</li>
+              <li>✨ واكس خارجي | Exterior Wax</li>
+              <li>✨ تلميع الإطارات | Tire Shine</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="slide-content">
+            <h2 class="page-title">🥇 الباقة الذهبية | Gold Package</h2>
+            <div class="prices">
+              <div class="price-card">🚗 Saloon: <span class="price">35 AED</span></div>
+              <div class="price-card">🚙 Wheel: <span class="price">45 AED</span></div>
+            </div>
+            <ul class="services">
+              <li>🛠️ تنظيف الشاصي + غرفة المحرك | Chassis & Engine Bay Cleaning</li>
+              <li>🚗 غسيل خارجي | Exterior Washing</li>
+              <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
+              <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
+              <li>🛠️ تنظيف لوحة القيادة | Dashboard Cleaning</li>
+              <li>🛠️ تنظيف لوحة الأبواب | Doors Panel Cleaning</li>
+              <li>✨ واكس خارجي | Exterior Wax</li>
+              <li>✨ تلميع الإطارات | Tire Shine</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="slide-content">
+            <h2 class="page-title">💎 الباقة البلاتينية | Platinum Package</h2>
+            <div class="prices">
+              <div class="price-card">🚗 Saloon: <span class="price">55 AED</span></div>
+              <div class="price-card">🚙 Wheel: <span class="price">75 AED</span></div>
+            </div>
+            <ul class="services">
+              <li>🛠️ تنظيف الشاصي | Chassis Cleaning</li>
+              <li>✨ تلميع الشاصي | Chassis Shine</li>
+              <li>🚗 غسيل خارجي | Exterior Washing</li>
+              <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
+              <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
+              <li>🛠️ تنظيف لوحة القيادة | Dashboard Cleaning</li>
+              <li>🛠️ تنظيف لوحة الأبواب | Doors Panel Cleaning</li>
+              <li>✨ واكس خارجي | Exterior Wax</li>
+              <li>✨ تلميع الإطارات | Tire Shine</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="slide-content">
+            <h2 class="page-title">💠 الباقة الماسية | Diamond Package</h2>
+            <div class="prices">
+              <div class="price-card">🚗 Saloon: <span class="price">90 AED</span></div>
+              <div class="price-card">🚙 Wheel: <span class="price">110 AED</span></div>
+            </div>
+            <ul class="services">
+              <li>🛠️ تنظيف وتلميع المحرك | Power Cleaning</li>
+              <li>🛠️ تنظيف الشاصي | Chassis Cleaning</li>
+              <li>✨ تلميع الشاصي | Chassis Shine</li>
+              <li>🚗 غسيل خارجي | Exterior Washing</li>
+              <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
+              <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
+              <li>🛠️ تنظيف لوحة القيادة | Dashboard Cleaning</li>
+              <li>🛠️ تنظيف لوحة الأبواب | Doors Panel Cleaning</li>
+              <li>✨ واكس خارجي | Exterior Wax</li>
+              <li>✨ تلميع الإطارات | Tire Dressing</li>
+              <li>💺 تلميع الإضاءة الداخلية | Seats Light Cleaning</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="slide-content">
+            <h2 class="page-title">🛠️ الخدمات المستقلة | Independent Services</h2>
+            <ul class="services">
+              <li>🛠️ تنظيف المحرك | Power Cleaning — 🚗 40 AED | 🚙 60 AED</li>
+              <li>🛠️ تنظيف الشاصي | Chassis Cleaning — 🚗 40 AED | 🚙 60 AED</li>
+              <li>✨ تلميع الشاصي | Chassis Shine — 🚗 25 AED | 🚙 35 AED</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+      
+      <div class="controls">
+        <div class="control-btn" id="prev-btn">
+          <i class="fas fa-arrow-right"></i>
         </div>
-        <ul class="services">
-          <li>🚗 غسيل خارجي | Exterior Washing</li>
-          <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
-          <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
-          <li>🛠️ تنظيف لوحة القيادة | Doors Panel Cleaning</li>
-          <li>✨ واكس خارجي | Exterior Wax</li>
-          <li>✨ تلميع الإطارات | Tire Shine</li>
-        </ul>
-      </section>
-
-      <section class="slide">
-        <h2 class="page-title">🥇 الباقة الذهبية | Gold Package</h2>
-        <div class="prices">
-          <div>🚗 Saloon: <span class="price">35 AED</span></div>
-          <div>🚙 Wheel: <span class="price">45 AED</span></div>
+        <div class="control-btn" id="next-btn">
+          <i class="fas fa-arrow-left"></i>
         </div>
-        <ul class="services">
-          <li>🛠️ تنظيف الشاصي + غرفة المحرك | Chassis & Engine Bay Cleaning</li>
-          <li>🚗 غسيل خارجي | Exterior Washing</li>
-          <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
-          <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
-          <li>🛠️ تنظيف لوحة القيادة | Dashboard Cleaning</li>
-          <li>🛠️ تنظيف لوحة الأبواب | Doors Panel Cleaning</li>
-          <li>✨ واكس خارجي | Exterior Wax</li>
-          <li>✨ تلميع الإطارات | Tire Shine</li>
-        </ul>
-      </section>
-
-      <section class="slide">
-        <h2 class="page-title">💎 الباقة البلاتينية | Platinum Package</h2>
-        <div class="prices">
-          <div>🚗 Saloon: <span class="price">55 AED</span></div>
-          <div>🚙 Wheel: <span class="price">75 AED</span></div>
-        </div>
-        <ul class="services">
-          <li>🛠️ تنظيف الشاصي | Chassis Cleaning</li>
-          <li>✨ تلميع الشاصي | Chassis Shine</li>
-          <li>🚗 غسيل خارجي | Exterior Washing</li>
-          <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
-          <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
-          <li>🛠️ تنظيف لوحة القيادة | Dashboard Cleaning</li>
-          <li>🛠️ تنظيف لوحة الأبواب | Doors Panel Cleaning</li>
-          <li>✨ واكس خارجي | Exterior Wax</li>
-          <li>✨ تلميع الإطارات | Tire Shine</li>
-        </ul>
-      </section>
-
-      <section class="slide">
-        <h2 class="page-title">💠 الباقة الماسية | Diamond Package</h2>
-        <div class="prices">
-          <div>🚗 Saloon: <span class="price">90 AED</span></div>
-          <div>🚙 Wheel: <span class="price">110 AED</span></div>
-        </div>
-        <ul class="services">
-          <li>🛠️ تنظيف وتلميع المحرك | Power Cleaning</li>
-          <li>🛠️ تنظيف الشاصي | Chassis Cleaning</li>
-          <li>✨ تلميع الشاصي | Chassis Shine</li>
-          <li>🚗 غسيل خارجي | Exterior Washing</li>
-          <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
-          <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
-          <li>🛠️ تنظيف لوحة القيادة | Dashboard Cleaning</li>
-          <li>🛠️ تنظيف لوحة الأبواب | Doors Panel Cleaning</li>
-          <li>✨ واكس خارجي | Exterior Wax</li>
-          <li>✨ تلميع الإطارات | Tire Dressing</li>
-          <li>💺 تلميع الإضاءة الداخلية | Seats Light Cleaning</li>
-        </ul>
-      </section>
-
-      <section class="slide">
-        <h2 class="page-title">🛠️ الخدمات المستقلة | Independent Services</h2>
-        <ul class="services">
-          <li>🛠️ تنظيف المحرك | Power Cleaning — 🚗 40 AED | 🚙 60 AED</li>
-          <li>🛠️ تنظيف الشاصي | Chassis Cleaning — 🚗 40 AED | 🚙 60 AED</li>
-          <li>✨ تلميع الشاصي | Chassis Shine — 🚗 25 AED | 🚙 35 AED</li>
-        </ul>
-      </section>
-    </main>
+      </div>
+    </div>
 
     <footer class="footer">
-      <div class="ticker"><span>مرحبًا بكم في محطة صوفر لخدمة السيارات | Welcome to Sawfar Auto Service Station</span></div>
+      <div class="ticker">
+        <span>مرحبًا بكم في محطة صوفر لخدمة السيارات | Welcome to Sawfar Auto Service Station - 📞 للاستفسار: 0551234567 - ✉️ Email: info@sawfarauto.com - 🕒 أوقات العمل: 8 صباحًا - 12 مساءً</span>
+      </div>
     </footer>
-
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    // Robust slideshow with loop + per-slide animations
+    let current = 0;
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let timers = [];
+    let intervalId = null;
+    const slideDuration = 8000; // 8 seconds per slide
+
+    function clearTimers(){ while(timers.length){ clearTimeout(timers.pop()); } }
+
+    function animateOnce(el, delay=80){
+      if(!el) return;
+      el.classList.remove('play');
+      void el.offsetWidth; // reflow to restart CSS animation
+      timers.push(setTimeout(()=> el.classList.add('play'), delay));
+    }
+
+    function showSlide(i){
+      clearTimers();
+      slides.forEach(s=>s.classList.remove('active'));
+      current = (i + slides.length) % slides.length;
+      const slide = slides[current];
+      slide.classList.add('active');
+      
+      // Reset and restart progress bar animation
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.style.animation = 'none';
+      void progressBar.offsetWidth; // Trigger reflow
+      progressBar.style.animation = `progress ${slideDuration}ms linear`;
+
+      // animate blocks (works even if some don't exist)
+      animateOnce(slide.querySelector('.page-title'), 30);
+      animateOnce(slide.querySelector('.prices'), 120);
+      animateOnce(slide.querySelector('.overview'), 120);
+
+      // stagger services items
+      const items = slide.querySelectorAll('.services li');
+      items.forEach((it, idx)=>{
+        it.classList.remove('show');
+        timers.push(setTimeout(()=> it.classList.add('show'), 180*idx + 180));
+      });
+    }
+
+    function startLoop(){
+      showSlide(0);
+      if(intervalId) clearInterval(intervalId);
+      intervalId = setInterval(()=> showSlide(current+1), slideDuration);
+    }
+
+    function updateClock(){
+      const d = new Date();
+      const h = String(d.getHours()).padStart(2,'0');
+      const m = String(d.getMinutes()).padStart(2,'0');
+      const el = document.getElementById('clock');
+      if(el) el.textContent = h + ':' + m;
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      startLoop();
+      updateClock();
+      setInterval(updateClock, 60000);
+
+      // Add progress bar animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes progress {
+          0% { width: 100%; }
+          100% { width: 0%; }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Allow manual testing with arrows/space and buttons
+      document.addEventListener('keydown', (e)=>{
+        if(e.key==='ArrowRight' || e.key===' '){ showSlide(current+1); }
+        if(e.key==='ArrowLeft'){ showSlide(current-1); }
+      });
+      
+      document.getElementById('next-btn').addEventListener('click', () => {
+        showSlide(current+1);
+      });
+      
+      document.getElementById('prev-btn').addEventListener('click', () => {
+        showSlide(current-1);
+      });
+    });
+  </script>
 </body>
 </html>
