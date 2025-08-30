@@ -28,7 +28,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:'Cair
 
 /* الشعار */
 .logo{
-  height: 130px;
+  height: 120px;
   order: 1;
 }
 
@@ -75,7 +75,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:'Cair
   font-size: 22px;
   display: flex;
   flex-direction: column;
-  gap: 20px;                /* مسافة ثابتة بين العناصر */
+  gap: 10px;                /* مسافة ثابتة بين العناصر */
   justify-content: space-evenly; /* توزيع العناصر لملء الشاشة */
   height: 100%;
 }
