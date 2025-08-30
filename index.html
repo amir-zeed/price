@@ -10,7 +10,7 @@
     /* Base */
     :root {
       --yellow: #FFD600;
-      --pink: #ff0281;
+      --pink: #FF66B2;
       --blue: #4A86E8;
       --green: #4CAF50;
       --bg: #000;
@@ -48,13 +48,12 @@
       justify-content: center;
       gap: 22px;
       padding: 36px 24px;
-      background: rgba(17, 17, 17, 0.85);
+      background: rgba(17, 17, 17, 0.95);
       border-bottom: 2px solid var(--yellow);
       min-height: 30vh;
       text-align: center;
       position: relative;
       z-index: 10;
-      backdrop-filter: blur(5px);
     }
     
     .left {
@@ -117,13 +116,14 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      z-index: 1;
     }
     
     .slide::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 100%);
+      background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%);
       z-index: -1;
     }
     
@@ -134,13 +134,25 @@
       transform: translateY(0) scale(1);
     }
     
-    /* Slide Backgrounds */
-    .slide:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
-    .slide:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
-    .slide:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
-    .slide:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1507136566006-cfc505b114fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
-    .slide:nth-child(5) { background-image: url('https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
-    .slide:nth-child(6) { background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); }
+    /* Slide Backgrounds - using lighter overlays and reliable images */
+    .slide:nth-child(1) { 
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); 
+    }
+    .slide:nth-child(2) { 
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); 
+    }
+    .slide:nth-child(3) { 
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); 
+    }
+    .slide:nth-child(4) { 
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1507136566006-cfc505b114fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); 
+    }
+    .slide:nth-child(5) { 
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); 
+    }
+    .slide:nth-child(6) { 
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); 
+    }
     
     /* Content Styling */
     .slide-content {
@@ -148,7 +160,7 @@
       margin: 0 auto;
       width: 100%;
       position: relative;
-      z-index: 2;
+      z-index: 3;
     }
     
     .page-title {
@@ -172,14 +184,13 @@
     }
     
     .price-card {
-      background: rgba(17, 17, 17, 0.8);
+      background: rgba(30, 30, 30, 0.9);
       padding: 20px 30px;
       border-radius: 12px;
       text-align: center;
       min-width: 200px;
       border: 2px solid var(--yellow);
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      backdrop-filter: blur(5px);
     }
     
     .price-card .price {
@@ -196,26 +207,25 @@
       font-size: 22px;
       opacity: 0;
       transform: translateY(20px);
-      background: rgba(17, 17, 17, 0.8);
+      background: rgba(30, 30, 30, 0.9);
       border-radius: 12px;
       overflow: hidden;
-      backdrop-filter: blur(5px);
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
     
     .overview th, .overview td {
-      border: 1px solid #333;
+      border: 1px solid #444;
       padding: 15px 20px;
       text-align: center;
     }
     
     .overview th {
-      background: rgba(27, 27, 27, 0.9);
+      background: rgba(40, 40, 40, 0.9);
       color: var(--yellow);
     }
     
     .overview td {
-      background: rgba(17, 17, 17, 0.7);
+      background: rgba(30, 30, 30, 0.8);
     }
     
     /* Services list */
@@ -233,13 +243,12 @@
     .services li {
       margin: 0;
       padding: 15px 20px;
-      background: rgba(17, 17, 17, 0.8);
+      background: rgba(30, 30, 30, 0.9);
       border-left: 5px solid var(--yellow);
       opacity: 0;
       transform: translateY(20px);
       border-radius: 0 8px 8px 0;
       box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-      backdrop-filter: blur(5px);
       transition: var(--transition);
     }
     
@@ -250,13 +259,12 @@
     
     /* Footer */
     .footer {
-      background: rgba(17, 17, 17, 0.85);
-      border-top: 1px solid #222;
+      background: rgba(17, 17, 17, 0.95);
+      border-top: 1px solid #333;
       padding: 15px;
       color: var(--yellow);
       position: relative;
       z-index: 10;
-      backdrop-filter: blur(5px);
     }
     
     .ticker {
@@ -287,7 +295,7 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: rgba(17, 17, 17, 0.8);
+      background: rgba(30, 30, 30, 0.9);
       border: 2px solid var(--yellow);
       color: var(--yellow);
       display: flex;
@@ -296,7 +304,6 @@
       cursor: pointer;
       transition: var(--transition);
       font-size: 20px;
-      backdrop-filter: blur(5px);
     }
     
     .control-btn:hover {
@@ -326,6 +333,11 @@
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes progress {
+      0% { width: 100%; }
+      100% { width: 0%; }
     }
     
     .play { animation: fadeUp 0.7s ease forwards; }
@@ -579,16 +591,6 @@
       startLoop();
       updateClock();
       setInterval(updateClock, 60000);
-
-      // Add progress bar animation
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes progress {
-          0% { width: 100%; }
-          100% { width: 0%; }
-        }
-      `;
-      document.head.appendChild(style);
 
       // Allow manual testing with arrows/space and buttons
       document.addEventListener('keydown', (e)=>{
