@@ -1,463 +1,143 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="utf-8" />
-  <title>محطة صوفر لخدمة السيارات | Sawfar Auto Service Station</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* متغيرات الألوان */
-    :root {
-      --primary: #FFD600;
-      --secondary: #FF66B2;
-      --dark: #000;
-      --dark-gray: #111;
-      --medium-gray: #333;
-      --light-gray: #aaa;
-      --white: #fff;
-    }
-    
-    /* الأساسيات */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    html, body {
-      height: 100%;
-      background: var(--dark);
-      color: var(--white);
-      font-family: 'Cairo', 'Montserrat', sans-serif;
-      overflow: hidden;
-    }
-    
-    #app {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    
-    /* الهيدر - تم تقليل حجمه */
-    .header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      padding: 15px 20px;
-      background: var(--dark-gray);
-      border-bottom: 3px solid var(--primary);
-      min-height: 20vh; /* تم تقليل الارتفاع */
-      text-align: center;
-      position: relative;
-    }
-    
-    .header-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      width: 100%;
-    }
-    
-    .logo {
-      height: 90px; /* تم تصغير الشعار */
-      transition: transform 0.3s ease;
-    }
-    
-    .logo:hover {
-      transform: scale(1.05);
-    }
-    
-    .clock {
-      font-size: 3.8rem; /* تم تكبير الساعة */
-      font-weight: 900;
-      color: var(--secondary);
-      text-shadow: 0 0 12px rgba(255, 102, 178, 0.6);
-    }
-    
-    .title {
-      font-size: 2.5rem; /* تم تكبير العنوان */
-      line-height: 1.2;
-      margin: 0;
-      color: var(--primary);
-      font-weight: 800;
-    }
-    
-    /* الشرائح */
-    .slides-container {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, var(--dark) 0%, var(--dark-gray) 100%);
-    }
-    
-    .slide {
-      position: absolute;
-      inset: 0;
-      padding: 25px;
-      overflow-y: auto;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      transform: translateY(20px);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start; /* تغيير من center إلى flex-start */
-    }
-    
-    .slide.active {
-      opacity: 1;
-      pointer-events: auto;
-      z-index: 1;
-      transform: translateY(0);
-    }
-    
-    .page-title {
-      font-size: 2.8rem; /* تم تكبير العنوان */
-      color: var(--primary);
-      margin: 0 0 25px;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(10px);
-      text-shadow: 0 0 10px rgba(255, 214, 0, 0.4);
-    }
-    
-    /* جدول النظرة العامة */
-    .overview {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 1.4rem; /* تم تكبير الخط */
-      opacity: 0;
-      transform: translateY(10px);
-      margin: 0 auto 20px; /* إضافة هامش سفلي */
-      max-width: 900px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    
-    .overview th, .overview td {
-      border: 1px solid var(--medium-gray);
-      padding: 16px 18px; /* زيادة المساحة الداخلية */
-      text-align: center;
-    }
-    
-    .overview th {
-      background: rgba(27, 27, 27, 0.9);
-      color: var(--primary);
-      font-weight: 800; /* زيادة سمك الخط */
-      font-size: 1.5rem; /* زيادة حجم خط العناوين */
-    }
-    
-    .overview td {
-      background: rgba(17, 17, 17, 0.9);
-      transition: background 0.3s ease;
-    }
-    
-    .overview tr:hover td {
-      background: rgba(40, 40, 40, 0.9);
-    }
-    
-    /* الأسعار */
-    .prices {
-      display: flex;
-      gap: 25px; /* زيادة المسافة بين العناصر */
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 30px; /* زيادة الهامش السفلي */
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    
-    .prices div {
-      background: rgba(17, 17, 17, 0.9);
-      padding: 18px 30px; /* زيادة المساحة الداخلية */
-      border-radius: 10px;
-      border-left: 5px solid var(--primary);
-      font-size: 1.5rem; /* زيادة حجم الخط */
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-    
-    .price {
-      color: var(--secondary);
-      font-weight: 800;
-      font-size: 1.6rem; /* زيادة حجم السعر */
-    }
-    
-    /* قائمة الخدمات - زيادة المسافات */
-    .services {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      font-size: 1.5rem; /* زيادة حجم الخط */
-      display: flex;
-      flex-direction: column;
-      gap: 22px; /* زيادة المسافة بين العناصر */
-      justify-content: flex-start; /* تغيير من space-evenly إلى flex-start */
-      max-width: 900px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    
-    .services li {
-      margin: 0;
-      padding: 18px; /* زيادة المساحة الداخلية */
-      background: rgba(17, 17, 17, 0.9);
-      border-left: 6px solid var(--primary);
-      border-radius: 0 10px 10px 0;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
-    }
-    
-    .services li:hover {
-      transform: translateX(5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* الفوتر - تم تكبيره */
-    .footer {
-      background: var(--dark-gray);
-      border-top: 3px solid var(--primary);
-      padding: 18px 20px; /* زيادة المساحة الداخلية */
-      color: var(--primary);
-      min-height: 8vh; /* زيادة ارتفاع الفوتر */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .ticker {
-      overflow: hidden;
-      white-space: nowrap;
-      width: 100%;
-      font-size: 1.8rem; /* زيادة حجم الخط */
-      font-weight: 700;
-    }
-    
-    .ticker span {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marquee 18s linear infinite;
-    }
-    
-    /* أزرار التنقل */
-    .navigation {
-      position: absolute;
-      bottom: 25px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      z-index: 10;
-    }
-    
-    .nav-dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--medium-gray);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-dot.active {
-      background: var(--primary);
-      transform: scale(1.2);
-    }
-    
-    /* الرسوم المتحركة */
-    @keyframes marquee {
-      to { transform: translateX(-100%); }
-    }
-    
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: none; }
-    }
-    
-    .play { animation: fadeUp 0.8s ease forwards; }
-    .services li.show { animation: fadeUp 0.7s ease forwards; }
-    
-    /* التأكد من أن المحتوى مرئي حتى إذا فشل جافاسكريبت */
-    .slide.active .page-title,
-    .slide.active .prices,
-    .slide.active .overview {
-      opacity: 1;
-      transform: none;
-    }
-    
-    /* تخصيص شريط التمرير */
-    .slide::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    .slide::-webkit-scrollbar-track {
-      background: var(--dark-gray);
-    }
-    
-    .slide::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-    
-    /* تأثيرات للشعار والساعة */
-    .logo {
-      filter: drop-shadow(0 0 8px rgba(255, 214, 0, 0.4));
-    }
-    
-    .clock {
-      letter-spacing: 3px;
-    }
-  </style>
+<!DOCTYPE html> <!-- تعريف نوع المستند HTML5 -->
+<html lang="en"> <!-- جذر الصفحة وتحديد لغة المحتوى -->
+<head> <!-- رأس الصفحة: إعدادات وموارد لا تظهر للمستخدم -->
+    <meta charset="UTF-8"> <!-- تعيين ترميز الأحرف إلى UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- تهيئة العرض لأجهزة الجوال -->
+    <title>Document</title> <!-- عنوان الصفحة الذي يظهر في التبويب -->
+    <link rel="stylesheet" href="style.css"> <!-- ربط ملف CSS خارجي للتنسيقات -->
 </head>
-<body>
-  <div id="app">
-    <header class="header">
-      <div class="header-content">
-        <img src="https://via.placeholder.com/180x80/111/FFD600?text=Sawfar+Auto" alt="Logo" class="logo">
-        <div id="clock" class="clock">00:00</div>
-        <h1 class="title">قائمة الأسعار | Price List</h1>
-      </div>
+<body> <!-- محتوى الصفحة المرئي للمستخدم -->
+    <header>
+        <nav>
+            <a href="">Home</a>
+            <a href="">Contacts</a>
+            <a href="">Info</a>
+        </nav>
     </header>
 
-    <main class="slides-container">
-      <!-- الشريحة الأولى: النظرة العامة -->
-      <section class="slide active">
-        <h2 class="page-title">جميع الخدمات | Overview</h2>
-        <table class="overview">
-          <tr><th>الخدمة</th><th>Saloon</th><th>Wheel</th></tr>
-          <tr><td>🥈 الباقة الفضية | Silver</td><td>25 AED</td><td>35 AED</td></tr>
-          <tr><td>🥇 الباقة الذهبية | Gold</td><td>35 AED</td><td>45 AED</td></tr>
-          <tr><td>💎 الباقة البلاتينية | Platinum</td><td>55 AED</td><td>75 AED</td></tr>
-          <tr><td>💠 الباقة الماسية | Diamond</td><td>90 AED</td><td>110 AED</td></tr>
-          <tr><td>🛠️ تنظيف المحرك | Power Cleaning</td><td>40 AED</td><td>60 AED</td></tr>
-          <tr><td>🛠️ تنظيف الشاصي | Chassis Cleaning</td><td>40 AED</td><td>60 AED</td></tr>
-          <tr><td>✨ تلميع الشاصي | Chassis Shine</td><td>25 AED</td><td>35 AED</td></tr>
-        </table>
-        
-        <div class="navigation">
-          <div class="nav-dot active"></div>
-          <div class="nav-dot"></div>
-          <div class="nav-dot"></div>
-          <div class="nav-dot"></div>
-          <div class="nav-dot"></div>
-          <div class="nav-dot"></div>
+    <!-- carousel -->
+    <div class="carousel"> <!-- مكوّن السلايدر/الكاروسيل -->
+        <!-- list item -->
+        <div class="list"> <!-- قائمة الشرائح (Slides) -->
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img1.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="author">LUNDEV</div> <!-- اسم المؤلف/التوقيع للشريحة -->
+                    <div class="title">DESIGN SLIDER</div> <!-- عنوان الشريحة الرئيسي -->
+                    <div class="topic">SOWFER</div> <!-- موضوع/تصنيف الشريحة -->
+                    <div class="des"> <!-- وصف نصّي للشريحة -->
+                        <!-- lorem 50 -->
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ut sequi, rem magnam nesciunt minima placeat, itaque eum neque officiis unde, eaque optio ratione aliquid assumenda facere ab et quasi ducimus aut doloribus non numquam. Explicabo, laboriosam nisi reprehenderit tempora at laborum natus unde. Ut, exercitationem eum aperiam illo illum laudantium?
+                    </div>
+                    <div class="buttons"> <!-- أزرار التفاعل داخل الشريحة -->
+                        <button>SEE MORE</button>
+                        <button>SUBSCRIBE</button>
+                    </div>
+                </div>
+            </div>
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img2.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="author">LUNDEV</div> <!-- اسم المؤلف/التوقيع للشريحة -->
+                    <div class="title">DESIGN SLIDER</div> <!-- عنوان الشريحة الرئيسي -->
+                    <div class="topic">ANIMAL</div> <!-- موضوع/تصنيف الشريحة -->
+                    <div class="des"> <!-- وصف نصّي للشريحة -->
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ut sequi, rem magnam nesciunt minima placeat, itaque eum neque officiis unde, eaque optio ratione aliquid assumenda facere ab et quasi ducimus aut doloribus non numquam. Explicabo, laboriosam nisi reprehenderit tempora at laborum natus unde. Ut, exercitationem eum aperiam illo illum laudantium?
+                    </div>
+                    <div class="buttons"> <!-- أزرار التفاعل داخل الشريحة -->
+                        <button>SEE MORE</button>
+                        <button>SUBSCRIBE</button>
+                    </div>
+                </div>
+            </div>
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img3.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="author">LUNDEV</div> <!-- اسم المؤلف/التوقيع للشريحة -->
+                    <div class="title">DESIGN SLIDER</div> <!-- عنوان الشريحة الرئيسي -->
+                    <div class="topic">ANIMAL</div> <!-- موضوع/تصنيف الشريحة -->
+                    <div class="des"> <!-- وصف نصّي للشريحة -->
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ut sequi, rem magnam nesciunt minima placeat, itaque eum neque officiis unde, eaque optio ratione aliquid assumenda facere ab et quasi ducimus aut doloribus non numquam. Explicabo, laboriosam nisi reprehenderit tempora at laborum natus unde. Ut, exercitationem eum aperiam illo illum laudantium?
+                    </div>
+                    <div class="buttons"> <!-- أزرار التفاعل داخل الشريحة -->
+                        <button>SEE MORE</button>
+                        <button>SUBSCRIBE</button>
+                    </div>
+                </div>
+            </div>
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img4.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="author">LUNDEV</div> <!-- اسم المؤلف/التوقيع للشريحة -->
+                    <div class="title">DESIGN SLIDER</div> <!-- عنوان الشريحة الرئيسي -->
+                    <div class="topic">ANIMAL</div> <!-- موضوع/تصنيف الشريحة -->
+                    <div class="des"> <!-- وصف نصّي للشريحة -->
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ut sequi, rem magnam nesciunt minima placeat, itaque eum neque officiis unde, eaque optio ratione aliquid assumenda facere ab et quasi ducimus aut doloribus non numquam. Explicabo, laboriosam nisi reprehenderit tempora at laborum natus unde. Ut, exercitationem eum aperiam illo illum laudantium?
+                    </div>
+                    <div class="buttons"> <!-- أزرار التفاعل داخل الشريحة -->
+                        <button>SEE MORE</button>
+                        <button>SUBSCRIBE</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </section>
-
-      <!-- الشريحة الثانية: الباقة الفضية -->
-      <section class="slide">
-        <h2 class="page-title">🥈 الباقة الفضية | Silver Package</h2>
-        <div class="prices">
-          <div>🚗 Saloon: <span class="price">25 AED</span></div>
-          <div>🚙 Wheel: <span class="price">35 AED</span></div>
+        <!-- list thumnail -->
+        <div class="thumbnail"> <!-- شريط مصغرات للتنقل بين الشرائح -->
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img1.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="title"> <!-- عنوان الشريحة الرئيسي -->
+                        Name Slider
+                    </div>
+                    <div class="description"> <!-- عنصر تقسيم لهيكلة التخطيط -->
+                        Description
+                    </div>
+                </div>
+            </div>
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img2.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="title"> <!-- عنوان الشريحة الرئيسي -->
+                        Name Slider
+                    </div>
+                    <div class="description"> <!-- عنصر تقسيم لهيكلة التخطيط -->
+                        Description
+                    </div>
+                </div>
+            </div>
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img3.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="title"> <!-- عنوان الشريحة الرئيسي -->
+                        Name Slider
+                    </div>
+                    <div class="description"> <!-- عنصر تقسيم لهيكلة التخطيط -->
+                        Description
+                    </div>
+                </div>
+            </div>
+            <div class="item"> <!-- عنصر شريحة واحدة -->
+                <img src="image/img4.jpg">
+                <div class="content"> <!-- منطقة النصوص داخل الشريحة -->
+                    <div class="title"> <!-- عنوان الشريحة الرئيسي -->
+                        Name Slider
+                    </div>
+                    <div class="description"> <!-- عنصر تقسيم لهيكلة التخطيط -->
+                        Description
+                    </div>
+                </div>
+            </div>
         </div>
-        <ul class="services">
-          <li>🚗 غسيل خارجي | Exterior Washing</li>
-          <li>🪟 تنظيف الزجاج | Glass Cleaning</li>
-          <li>🧽 تنظيف داخلي بالفاكيوم | Interior Vacuum Cleaning</li>
-          <li>🛠️ تنظيف لوحة القيادة | Doors Panel Cleaning</li>
-          <li>✨ واكس خارجي | Exterior Wax</li>
-          <li>✨ تلميع الإطارات | Tire Shine</li>
-        </ul>
-        
-        <div class="navigation">
-          <div class="nav-dot"></div>
-          <div class="nav-dot active"></div>
-          <div class="nav-dot"></div>
-          <div class="nav-dot"></div>
-          <div class="nav-dot"></div>
-          <div class="nav-dot"></div>
+        <!-- next prev -->
+
+        <div class="arrows"> <!-- أزرار السهم للتنقل التالي/السابق -->
+            <button id="prev"><</button> <!-- زر السابق -->
+            <button id="next">></button> <!-- زر التالي -->
         </div>
-      </section>
+        <!-- time running -->
+        <div class="time"></div> <!-- عنصر تقسيم لهيكلة التخطيط -->
+    </div>
 
-      <!-- باقي الشرائح هنا -->
-      
-    </main>
-
-    <footer class="footer">
-      <div class="ticker"><span>مرحبًا بكم في محطة صوفر لخدمة السيارات | Welcome to Sawfar Auto Service Station</span></div>
-    </footer>
-  </div>
-
-  <script>
-    // Robust slideshow with loop + per-slide animations
-    let current = 0;
-    const slides = Array.from(document.querySelectorAll('.slide'));
-    const dots = Array.from(document.querySelectorAll('.nav-dot'));
-    let timers = [];
-    let intervalId = null;
-
-    function clearTimers(){ while(timers.length){ clearTimeout(timers.pop()); } }
-
-    function animateOnce(el, delay=80){
-      if(!el) return;
-      el.classList.remove('play');
-      void el.offsetWidth; // reflow to restart CSS animation
-      timers.push(setTimeout(()=> el.classList.add('play'), delay));
-    }
-
-    function showSlide(i){
-      clearTimers();
-      slides.forEach(s=>s.classList.remove('active'));
-      dots.forEach(d=>d.classList.remove('active'));
-      
-      current = (i + slides.length) % slides.length;
-      const slide = slides[current];
-      slide.classList.add('active');
-      dots[current].classList.add('active');
-
-      // animate blocks (works even if some don't exist)
-      animateOnce(slide.querySelector('.page-title'), 30);
-      animateOnce(slide.querySelector('.prices'), 120);
-      animateOnce(slide.querySelector('.overview'), 120);
-
-      // stagger services items
-      const items = slide.querySelectorAll('.services li');
-      items.forEach((it, idx)=>{
-        it.classList.remove('show');
-        timers.push(setTimeout(()=> it.classList.add('show'), 180*idx + 180));
-      });
-    }
-
-    function startLoop(){
-      showSlide(0);
-      if(intervalId) clearInterval(intervalId);
-      intervalId = setInterval(()=> showSlide(current+1), 15000);
-    }
-
-    function updateClock(){
-      const d = new Date();
-      const h = String(d.getHours()).padStart(2,'0');
-      const m = String(d.getMinutes()).padStart(2,'0');
-      const el = document.getElementById('clock');
-      if(el) el.textContent = h + ':' + m;
-    }
-
-    document.addEventListener('DOMContentLoaded', ()=>{
-      startLoop();
-      updateClock();
-      setInterval(updateClock, 60000);
-
-      // Allow manual testing with arrows/space
-      document.addEventListener('keydown', (e)=>{
-        if(e.key==='ArrowRight' || e.key===' '){ showSlide(current+1); }
-        if(e.key==='ArrowLeft'){ showSlide(current-1); }
-      });
-      
-      // Add click events to dots
-      dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-          showSlide(index);
-        });
-      });
-    });
-  </script>
-</body>
-</html>
+    <script src="app.js"></script> <!-- ربط ملف جافاسكربت للتحكم بالحركات -->
+</body> <!-- نهاية محتوى الصفحة -->
+</html> <!-- نهاية المستند -->
