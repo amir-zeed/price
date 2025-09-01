@@ -1,60 +1,49 @@
-// Robust slideshow with loop + per-slide animations
-let current = 0;
-const slides = Array.from(document.querySelectorAll('.slide'));
-let timers = [];
-let intervalId = null;
+//step 1: get DOM // تعليق توضيحي في الكود
+let nextDom = document.getElementById('next'); // التقاط عناصر من DOM عبر المعرّف للتحكم بها
+let prevDom = document.getElementById('prev'); // التقاط عناصر من DOM عبر المعرّف للتحكم بها
 
-function clearTimers(){ while(timers.length){ clearTimeout(timers.pop()); } }
+let carouselDom = document.querySelector('.carousel'); // تعريف متغير للاستخدام لاحقاً
+let SliderDom = carouselDom.querySelector('.carousel .list'); // تعريف متغير للاستخدام لاحقاً
+let thumbnailBorderDom = document.querySelector('.carousel .thumbnail'); // تعريف متغير للاستخدام لاحقاً
+let thumbnailItemsDom = thumbnailBorderDom.querySelectorAll('.item'); // تعريف متغير للاستخدام لاحقاً
+let timeDom = document.querySelector('.carousel .time'); // تعريف متغير للاستخدام لاحقاً
 
-function animateOnce(el, delay=80){
-  if(!el) return;
-  el.classList.remove('play');
-  void el.offsetWidth; // reflow to restart CSS animation
-  timers.push(setTimeout(()=> el.classList.add('play'), delay));
+thumbnailBorderDom.appendChild(thumbnailItemsDom[0]);
+let timeRunning = 3000; // تعريف متغير للاستخدام لاحقاً
+let timeAutoNext = 7000; // تعريف متغير للاستخدام لاحقاً
+
+nextDom.onclick = function(){
+    showSlider('next');    
 }
 
-function showSlide(i){
-  clearTimers();
-  slides.forEach(s=>s.classList.remove('active'));
-  current = (i + slides.length) % slides.length;
-  const slide = slides[current];
-  slide.classList.add('active');
-
-  // animate blocks (works even if some don't exist)
-  animateOnce(slide.querySelector('.page-title'), 30);
-  animateOnce(slide.querySelector('.prices'), 120);
-  animateOnce(slide.querySelector('.overview'), 120);
-
-  // stagger services items
-  const items = slide.querySelectorAll('.services li');
-  items.forEach((it, idx)=>{
-    it.classList.remove('show');
-    timers.push(setTimeout(()=> it.classList.add('show'), 180*idx + 180));
-  });
+prevDom.onclick = function(){
+    showSlider('prev');    
 }
+let runTimeOut; // تعريف متغير للاستخدام لاحقاً
+let runNextAuto = setTimeout(() => { // تعريف متغير للاستخدام لاحقاً
+    next.click(); // محاكاة نقر زر التالي/السابق للتنقل تلقائياً
+}, timeAutoNext)
+function showSlider(type){ // تعريف دالة تنفّذ سلوكاً معيناً
+    let  SliderItemsDom = SliderDom.querySelectorAll('.carousel .list .item'); // تعريف متغير للاستخدام لاحقاً
+    let thumbnailItemsDom = document.querySelectorAll('.carousel .thumbnail .item'); // تعريف متغير للاستخدام لاحقاً
+    
+    if(type === 'next'){
+        SliderDom.appendChild(SliderItemsDom[0]);
+        thumbnailBorderDom.appendChild(thumbnailItemsDom[0]);
+        carouselDom.classList.add('next'); // تغيير الأصناف (classes) لتفعيل تأثيرات CSS
+    }else{
+        SliderDom.prepend(SliderItemsDom[SliderItemsDom.length - 1]);
+        thumbnailBorderDom.prepend(thumbnailItemsDom[thumbnailItemsDom.length - 1]);
+        carouselDom.classList.add('prev'); // تغيير الأصناف (classes) لتفعيل تأثيرات CSS
+    }
+    clearTimeout(runTimeOut);
+    runTimeOut = setTimeout(() => { // مؤقّت لتنفيذ أمر بعد مدة زمنية
+        carouselDom.classList.remove('next'); // تغيير الأصناف (classes) لتفعيل تأثيرات CSS
+        carouselDom.classList.remove('prev'); // تغيير الأصناف (classes) لتفعيل تأثيرات CSS
+    }, timeRunning);
 
-function startLoop(){
-  showSlide(0);
-  if(intervalId) clearInterval(intervalId);
-  intervalId = setInterval(()=> showSlide(current+1), 15000);
+    clearTimeout(runNextAuto);
+    runNextAuto = setTimeout(() => { // مؤقّت لتنفيذ أمر بعد مدة زمنية
+        next.click(); // محاكاة نقر زر التالي/السابق للتنقل تلقائياً
+    }, timeAutoNext)
 }
-
-function updateClock(){
-  const d = new Date();
-  const h = String(d.getHours()).padStart(2,'0');
-  const m = String(d.getMinutes()).padStart(2,'0');
-  const el = document.getElementById('clock');
-  if(el) el.textContent = h + ':' + m;
-}
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  startLoop();
-  updateClock();
-  setInterval(updateClock, 60000);
-
-  // Allow manual testing with arrows/space
-  document.addEventListener('keydown', (e)=>{
-    if(e.key==='ArrowRight' || e.key===' '){ showSlide(current+1); }
-    if(e.key==='ArrowLeft'){ showSlide(current-1); }
-  });
-});
